@@ -8,6 +8,16 @@ ShaderVariantCollection:
   m_PrefabAsset: {fileID: 0}
   m_Name: AllShaders
   m_Shaders:
+  - first: {fileID: 4800000, guid: 00218e4f0ba5f5342b9e30a2079bede9, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+  - first: {fileID: 4800000, guid: d053233f84bf8c047bef2431d30a7eb7, type: 3}
+    second:
+      variants:
+      - keywords: LIGHTMAP_ON USE_DETAILNORMAL _ALPHABLEND_ON _MIXTEX _NORMALMAP
+        passType: 4
   - first: {fileID: 4800000, guid: 62873910d2c8cdc4a8e7e4b49ecfe37e, type: 3}
     second:
       variants:
@@ -25,15 +35,5 @@ ShaderVariantCollection:
   - first: {fileID: 4800000, guid: 0406db5a14f94604a8c57ccfbc9f3b46, type: 3}
     second:
       variants:
-      - keywords: _ALPHAMODULATE_ON _COLORCOLOR_ON
-        passType: 0
-  - first: {fileID: 4800000, guid: d053233f84bf8c047bef2431d30a7eb7, type: 3}
-    second:
-      variants:
-      - keywords: LIGHTMAP_ON USE_DETAILNORMAL _ALPHABLEND_ON _MIXTEX _NORMALMAP
-        passType: 4
-  - first: {fileID: 4800000, guid: 00218e4f0ba5f5342b9e30a2079bede9, type: 3}
-    second:
-      variants:
-      - keywords: 
+      - keywords: _ALPHAMODULATE_ON _COLORCOLOR_ON _SURFACE_TYPE_TRANSPARENT
         passType: 0

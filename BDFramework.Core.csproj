@@ -158,8 +158,8 @@
      <Compile Include="Packages\com.popo.bdframework\Runtime\3rdGithub\Telepathy\SafeQueue.cs" />
      <Compile Include="Packages\com.popo.bdframework\Runtime\3rdGithub\NetProtocol\Protobuf\ByteString.cs" />
      <Compile Include="Packages\com.popo.bdframework\Runtime\Event\@main\ADataListenerTBase.cs" />
-     <Compile Include="Packages\com.popo.bdframework\Runtime\DotNetExtension\HashHelper.cs" />
      <Compile Include="Packages\com.popo.bdframework\Runtime\UI(UFlux)\@hotfix\View\Windows\UIManagerExDI.cs" />
+     <Compile Include="Packages\com.popo.bdframework\Runtime\DotNetExtension\HashHelper.cs" />
      <Compile Include="Packages\com.popo.bdframework\Runtime\Debugger\@hotfix\IDebuggerServerProcess.cs" />
      <Compile Include="Packages\com.popo.bdframework\Runtime\DotNetExtension\DataTime.cs" />
      <Compile Include="Packages\com.popo.bdframework\Runtime\UI(UFlux)\@hotfix\View\Atrribute\ComponentValueBindAttribute.cs" />
