@@ -79,8 +79,10 @@ namespace BDFramework.Mgr
         /// <summary>
         /// 启动所有管理器
         /// </summary>
+        [Obsolete]
         static public void Start()
         {
+            
             foreach (var mgr in mgrList)
             {
                 mgr.Start();

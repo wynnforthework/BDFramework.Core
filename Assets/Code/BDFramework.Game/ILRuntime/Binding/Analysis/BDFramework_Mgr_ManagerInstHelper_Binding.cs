@@ -25,9 +25,6 @@ namespace ILRuntime.Runtime.Generated
             args = new Type[]{typeof(System.Type[])};
             method = type.GetMethod("Load", flag, null, args, null);
             app.RegisterCLRMethodRedirection(method, Load_0);
-            args = new Type[]{};
-            method = type.GetMethod("Start", flag, null, args, null);
-            app.RegisterCLRMethodRedirection(method, Start_1);
 
 
         }
@@ -45,17 +42,6 @@ namespace ILRuntime.Runtime.Generated
 
 
             BDFramework.Mgr.ManagerInstHelper.Load(@types);
-
-            return __ret;
-        }
-
-        static StackObject* Start_1(ILIntepreter __intp, StackObject* __esp, IList<object> __mStack, CLRMethod __method, bool isNewObj)
-        {
-            ILRuntime.Runtime.Enviorment.AppDomain __domain = __intp.AppDomain;
-            StackObject* __ret = ILIntepreter.Minus(__esp, 0);
-
-
-            BDFramework.Mgr.ManagerInstHelper.Start();
 
             return __ret;
         }

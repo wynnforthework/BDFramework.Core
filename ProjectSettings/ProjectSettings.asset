@@ -802,7 +802,7 @@ PlayerSettings:
   scriptingDefineSymbols:
     Android: ODIN_INSPECTOR;ODIN_INSPECTOR_3
     PS5: 
-    Standalone: ODIN_INSPECTOR
+    Standalone: ODIN_INSPECTOR;ODIN_INSPECTOR_3
     iPhone: ODIN_INSPECTOR
   additionalCompilerArguments: {}
   platformArchitecture: {}
