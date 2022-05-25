@@ -200,8 +200,8 @@ namespace SQLite4Unity3d
         /// </summary>
         public TableQueryCustom WhereIn<T>(string field, IEnumerable<T> values)
         {
-            var sqlIn = string.Join(",", values);
-            this.@where = ZString.Format("{0} {1} in ({2})", this.@where, field, sqlIn);
+            var sqlIn = string.Join("','", values);
+            this.@where = ZString.Format("{0} {1} in ('{2}')", this.@where, field, sqlIn);
 
             return this;
         }
@@ -211,8 +211,8 @@ namespace SQLite4Unity3d
         /// </summary>
         public TableQueryCustom WhereIn(string field, params object[] objs)
         {
-            var sqlIn = string.Join(",", objs);
-            this.@where = ZString.Format("{0} {1} in ({2})", this.@where, field, sqlIn);
+            var sqlIn = string.Join("','", objs);
+            this.@where = ZString.Format("{0} {1} in ('{2}')", this.@where, field, sqlIn);
 
             return this;
         }
@@ -222,7 +222,7 @@ namespace SQLite4Unity3d
         /// </summary>
         public TableQueryCustom WhereEqual(string where, object value)
         {
-            var query = ZString.Format("{0} = {1}", where, value);
+            var query = ZString.Format("{0} = '{1}'", where, value);
             this.@where = ZString.Concat(this.@where, " ", query);
             return this;
         }
@@ -240,11 +240,11 @@ namespace SQLite4Unity3d
                 var value = objs[i].ToString();
                 if (sql == "")
                 {
-                    sql = ZString.Format(" {0} {1} {2}", field, operation, value);
+                    sql = ZString.Format(" {0} {1} '{2}'", field, operation, value);
                 }
                 else
                 {
-                    sql += ZString.Format(" or {0} {1} {2}", field, operation, value);
+                    sql += ZString.Format(" or {0} {1} '{2}'", field, operation, value);
                 }
             }
 
@@ -265,11 +265,11 @@ namespace SQLite4Unity3d
                 var value = objs[i].ToString();
                 if (sql == "")
                 {
-                    sql += ZString.Format(" {0} {1} {2}", field, operation, value);
+                    sql += ZString.Format(" {0} {1} '{2}'", field, operation, value);
                 }
                 else
                 {
-                    sql += ZString.Format(" and {0} {1} {2}", field, operation, value);
+                    sql += ZString.Format(" and {0} {1} '{2}'", field, operation, value);
                 }
             }
 
