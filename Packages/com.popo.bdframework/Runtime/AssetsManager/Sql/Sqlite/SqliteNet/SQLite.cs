@@ -3533,7 +3533,7 @@ namespace SQLite4Unity3d
                 var total = serchSqlTime + deSerializeTime;
                 if (total > 10)
                 {
-                    if (Application.isPlaying)
+                   // if (Application.isPlaying)
                     {
                         UnityEngine.Debug.LogError($"<color=white>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, 执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化耗时：<color=yellow>{deSerializeTime}ms</color>");
                     }

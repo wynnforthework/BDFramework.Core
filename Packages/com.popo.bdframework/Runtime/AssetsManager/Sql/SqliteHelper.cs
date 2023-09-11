@@ -106,12 +106,16 @@ namespace BDFramework.Sql
         /// </summary>
         static public SQLiteConnection LoadDBReadWriteCreate(string path)
         {
-            BDebug.Log($" DB Path:{path}  <color=yellow>password:{Password}</color>");
+            BDebug.Log($"ReadWrite|Create - Path:{path} <color=yellow>password:{Password}</color>");
             SQLiteConnectionString cs = new SQLiteConnectionString(path,
                 SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create, true, key: Password);
             var con = new SQLiteConnection(cs);
-            SqLiteConnectionMap[Path.GetFileNameWithoutExtension(path)] = con;
-            return con;
+            if (con.IsOpen)
+            {
+                SqLiteConnectionMap[Path.GetFileName(path)] = con;
+                return con;
+            }
+            return null;
         }
 
 
@@ -406,10 +410,14 @@ namespace BDFramework.Sql
             if (!DBServiceMap.TryGetValue(dbName, out db) || db.IsClose) //防止持有未关闭的db connect
             {
                 var con = SqliteLoder.GetSqliteConnect(dbName);
-                if (con.IsOpen)
+                if (con!=null && con.IsOpen)
                 {
                     db = new SQLiteService(con);
                     DBServiceMap[dbName] = db;
+                }
+                else
+                {
+                    throw new Exception("找不到dbanme的连接器:" + dbName);
                 }
             }
 

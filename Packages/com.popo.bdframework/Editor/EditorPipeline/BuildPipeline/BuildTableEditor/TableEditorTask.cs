@@ -20,7 +20,7 @@ namespace BDFramework.Editor.Table
         static public void OnForceImpotChangedExcel()
         {
             //判断是否导入设置
-            if (BDEditorApplication.EditorSetting.BuildSqlSetting.IsForceImportChangedExcelOnWillEnterPlaymode && BDLauncher.Inst.Config.SQLRoot== AssetLoadPathType.Editor)
+            if (BDLauncher.Inst!=null&&BDEditorApplication.EditorSetting.BuildSqlSetting.IsForceImportChangedExcelOnWillEnterPlaymode && BDLauncher.Inst.Config.SQLRoot== AssetLoadPathType.Editor)
             {
                 Debug.Log("【EditorTask】数据库校验begin...");
                 var dbPath = SqliteLoder.GetLocalDBPath(BApplication.streamingAssetsPath, BApplication.RuntimePlatform);
