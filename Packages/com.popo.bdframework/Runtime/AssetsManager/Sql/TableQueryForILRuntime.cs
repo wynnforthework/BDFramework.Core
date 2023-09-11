@@ -350,6 +350,25 @@ namespace SQLite4Unity3d
         }
         
         /// <summary>
+        /// 快速检索
+        /// </summary>
+        /// <param name="selection"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public List<T> FastFromAll<T>(string selection = "*")
+        {
+            var type = typeof(T);
+            var sqlCmdText = GenerateCommand(selection, type.Name);
+#if UNITY_EDITOR
+            Debug.Log("sql:" + sqlCmdText);
+#endif
+            //查询
+            var cmd = this.Connection.CreateCommand(sqlCmdText);
+            var list = cmd.FastExecuteQuery<T>();
+            return list;
+        }
+        
+        /// <summary>
         /// 非泛型方法
         /// </summary>
         /// <param name="type"></param>

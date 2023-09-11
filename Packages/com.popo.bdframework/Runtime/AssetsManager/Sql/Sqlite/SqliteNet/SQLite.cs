@@ -2797,7 +2797,7 @@ namespace SQLite4Unity3d
                         .FirstOrDefault();
 #endif
             }
-            
+
 
             TableName = (tableAttr != null && !string.IsNullOrEmpty(tableAttr.Name)) ? tableAttr.Name : MappedType.Name;
             WithoutRowId = tableAttr != null ? tableAttr.WithoutRowId : false;
@@ -2847,7 +2847,7 @@ namespace SQLite4Unity3d
             {
                 return GetFieldsFromValueTuple(type);
             }
-            
+
             var members = new List<MemberInfo>();
             var memberNames = new HashSet<string>();
             var newMembers = new List<MemberInfo>();
@@ -3131,7 +3131,6 @@ namespace SQLite4Unity3d
 
                 return obj.GetType();
             }
-
         }
 
         public static string SqlDecl(TableMapping.Column p, bool storeDateTimeAsTicks, bool storeTimeSpanAsTicks)
@@ -3168,7 +3167,7 @@ namespace SQLite4Unity3d
             {
                 clrType = ilrtype.RealType;
             }
-            
+
             if (clrType == typeof(Boolean) || clrType == typeof(Byte) || clrType == typeof(UInt16) || clrType == typeof(SByte) || clrType == typeof(Int16) || clrType == typeof(Int32) || clrType == typeof(UInt32) || clrType == typeof(Int64))
             {
                 return "integer";
@@ -3406,6 +3405,19 @@ namespace SQLite4Unity3d
             return ret;
         }
 
+        /// <summary>
+        /// 快速检索
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public List<T> FastExecuteQuery<T>()
+        {
+            var t = typeof(T);
+            var map = _conn.GetMapping(t);
+            var ret = FastExecuteDeferredQuery<T>(map).ToList();
+            return ret;
+        }
+
         public List<T> ExecuteQuery<T>()
         {
             return ExecuteDeferredQuery<T>(_conn.GetMapping(typeof(T))).ToList();
@@ -3523,7 +3535,7 @@ namespace SQLite4Unity3d
                         }
                     }
 
-                   
+
                     OnInstanceCreated(obj);
                     yield return (T) obj;
                 }
@@ -3531,13 +3543,7 @@ namespace SQLite4Unity3d
                 sw.Stop();
                 var deSerializeTime = sw.ElapsedTicks / 10000f;
                 var total = serchSqlTime + deSerializeTime;
-                if (total > 10)
-                {
-                   // if (Application.isPlaying)
-                    {
-                        UnityEngine.Debug.LogError($"<color=white>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, 执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化耗时：<color=yellow>{deSerializeTime}ms</color>");
-                    }
-                }
+                UnityEngine.Debug.Log($"<color=red>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, 执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化耗时：<color=yellow>{deSerializeTime}ms</color>");
 #endif
             }
             finally
@@ -3545,6 +3551,78 @@ namespace SQLite4Unity3d
                 SQLite3.Finalize(stmt);
             }
         }
+
+
+        /// <summary>
+        /// 快速检索
+        /// </summary>
+        /// <param name="map"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IEnumerable<T> FastExecuteDeferredQuery<T>(TableMapping map)
+        {
+#if ENABLE_BDEBUG
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+#endif
+            if (_conn.Trace)
+            {
+                _conn.Tracer?.Invoke("Executing Query: " + this);
+            }
+
+            var stmt = Prepare();
+            try
+            {
+                //Sqlite查表
+                var cols = new TableMapping.Column[SQLite3.ColumnCount(stmt)];
+                if (map.Method == TableMapping.MapMethod.ByPosition)
+                {
+                    Array.Copy(map.Columns, cols, Math.Min(cols.Length, map.Columns.Length));
+                }
+                else if (map.Method == TableMapping.MapMethod.ByName)
+                {
+                    for (int i = 0; i < cols.Length; i++)
+                    {
+                        var name = SQLite3.ColumnName16(stmt, i);
+                        cols[i] = map.FindColumn(name);
+                    }
+                }
+#if ENABLE_BDEBUG
+                sw.Stop();
+                var serchSqlTime = sw.ElapsedTicks / 10000f;
+                sw.Restart();
+#endif
+                var count = 0;
+                //查询结果，反序列化
+                while (SQLite3.Step(stmt) == SQLite3.Result.Row)
+                {
+                    count++;
+                    var obj = Activator.CreateInstance(map.MappedType);
+                    for (int i = 0; i < cols.Length; i++)
+                    {
+                        var col = cols[i];
+                        if (col == null)
+                            continue;
+                        var colType = SQLite3.ColumnType(stmt, i);
+                        var value = ReadCol(stmt, i, colType, cols[i].ColumnType);
+                        col.SetValue(obj, value);
+                    }
+
+                    yield return (T) obj;
+                }
+#if ENABLE_BDEBUG
+                sw.Stop();
+                var deSerializeTime = sw.ElapsedTicks / 10000f;
+                var total = serchSqlTime + deSerializeTime;
+                UnityEngine.Debug.Log($"<color=red>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, 执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化耗时：<color=yellow>{deSerializeTime}ms</color>");
+#endif
+            }
+            finally
+            {
+                SQLite3.Finalize(stmt);
+            }
+        }
+
 
         public T ExecuteScalar<T>()
         {
@@ -3762,7 +3840,7 @@ namespace SQLite4Unity3d
                 else if (value.GetType().IsArray || value.GetType().FullName.Contains(".List"))
                 {
                     byte[] bytes = MessagePackSerializer.Serialize(value);
-                    
+
                     SQLite3.BindBlob(stmt, index, bytes, bytes.Length, NegativePointer);
                 }
                 else
@@ -3936,10 +4014,10 @@ namespace SQLite4Unity3d
                     return new UriBuilder(text);
                 }
                 //ForILR:数组当成json串存储,文档存储
-                else if (clrType.IsArray ||clrType.FullName.Contains(".List"))
+                else if (clrType.IsArray || clrType.FullName.Contains(".List"))
                 {
                     var bytes = SQLite3.ColumnByteArray(stmt, index);
-                   
+
 
                     if (clrType.IsArray)
                     {
@@ -3988,7 +4066,7 @@ namespace SQLite4Unity3d
                             return MessagePackSerializer.Deserialize<List<double>>(bytes);
                         }
                     }
-                  
+
 
                     return null;
                 }
