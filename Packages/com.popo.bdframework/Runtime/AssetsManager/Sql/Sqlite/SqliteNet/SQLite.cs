@@ -41,6 +41,7 @@ using ILRuntime.Reflection;
 using ILRuntime.Runtime.Intepreter;
 using LitJson;
 using MessagePack;
+using PtrReflection;
 using UnityEngine;
 using Utils.mslibEx;
 using Debug = System.Diagnostics.Debug;
@@ -3503,6 +3504,10 @@ namespace SQLite4Unity3d
                 sw.Restart();
 #endif
                 var count = 0;
+                
+                Stopwatch readColSW = new Stopwatch();
+                Stopwatch reflectionSW = new Stopwatch();
+
                 //反序列化
                 while (SQLite3.Step(stmt) == SQLite3.Result.Row)
                 {
@@ -3530,8 +3535,13 @@ namespace SQLite4Unity3d
                         else
                         {
                             var colType = SQLite3.ColumnType(stmt, i);
-                            var val = ReadCol(stmt, i, colType, cols[i].ColumnType);
-                            cols[i].SetValue(obj, val);
+                            readColSW.Start();
+                            var value = ReadCol(stmt, i, colType, cols[i].ColumnType);
+                            readColSW.Stop();
+                            //
+                            reflectionSW.Start();
+                            cols[i].SetValue(obj, value);
+                            reflectionSW.Stop();
                         }
                     }
 
@@ -3543,8 +3553,10 @@ namespace SQLite4Unity3d
                 sw.Stop();
                 var deSerializeTime = sw.ElapsedTicks / 10000f;
                 var total = serchSqlTime + deSerializeTime;
-                UnityEngine.Debug.Log($"<color=red>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, 执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化耗时：<color=yellow>{deSerializeTime}ms</color>");
-#endif
+                UnityEngine.Debug.Log($"<color=red>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, " +
+                                      $"执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化总耗时：<color=yellow>{deSerializeTime}ms</color> " +
+                                      $" - 读取Row数据耗时：<color=yellow>{readColSW.ElapsedTicks/10000f} ms</color>,反射赋值耗时:<color=yellow>{reflectionSW.ElapsedTicks/10000f} ms</color>");
+#endif       
             }
             finally
             {
@@ -3552,6 +3564,7 @@ namespace SQLite4Unity3d
             }
         }
 
+  
 
         /// <summary>
         /// 快速检索
@@ -3559,12 +3572,13 @@ namespace SQLite4Unity3d
         /// <param name="map"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public IEnumerable<T> FastExecuteDeferredQuery<T>(TableMapping map)
+        public  unsafe List<T> FastExecuteDeferredQuery<T>(TableMapping map)
         {
 #if ENABLE_BDEBUG
             Stopwatch sw = new Stopwatch();
             sw.Start();
 #endif
+            List<T> retList = new List<T>();
             if (_conn.Trace)
             {
                 _conn.Tracer?.Invoke("Executing Query: " + this);
@@ -3592,35 +3606,58 @@ namespace SQLite4Unity3d
                 var serchSqlTime = sw.ElapsedTicks / 10000f;
                 sw.Restart();
 #endif
-                var count = 0;
+
+                Stopwatch readColSW = new Stopwatch();
+                Stopwatch reflectionSW = new Stopwatch();
+                
+                
                 //查询结果，反序列化
+                var count = 0;
+                TypeAddrReflectionWrapper reflectionWrapper = TypeAddrReflectionWrapper.GetWrapper(typeof(T));
                 while (SQLite3.Step(stmt) == SQLite3.Result.Row)
                 {
                     count++;
                     var obj = Activator.CreateInstance(map.MappedType);
+                    //指针偏移
+                    byte* handleByte = UnsafeTool.unsafeTool.ObjectToBytePtr(obj);
                     for (int i = 0; i < cols.Length; i++)
                     {
                         var col = cols[i];
                         if (col == null)
                             continue;
                         var colType = SQLite3.ColumnType(stmt, i);
+                        readColSW.Start();
                         var value = ReadCol(stmt, i, colType, cols[i].ColumnType);
-                        col.SetValue(obj, value);
+                        readColSW.Stop();
+                        //
+                        reflectionSW.Start();
+                        var name = col.Name;
+                        fixed (char* p = name)
+                        {
+                            TypeAddrFieldAndProperty typeAddr = reflectionWrapper.Find(p,  name.Length);
+                            typeAddr.SetPropertyValue(handleByte, value);
+                            //var v = (int)typeAddr.GetPropertyValue(handleByte);
+                        }
+                        reflectionSW.Stop();
                     }
-
-                    yield return (T) obj;
+                    //添加
+                    retList.Add((T)obj);
                 }
 #if ENABLE_BDEBUG
                 sw.Stop();
                 var deSerializeTime = sw.ElapsedTicks / 10000f;
                 var total = serchSqlTime + deSerializeTime;
-                UnityEngine.Debug.Log($"<color=red>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, 执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化耗时：<color=yellow>{deSerializeTime}ms</color>");
+                UnityEngine.Debug.Log($"<color=red>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, " +
+                                      $"执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化总耗时：<color=yellow>{deSerializeTime}ms</color> " +
+                                      $" - 读取Row数据耗时：<color=yellow>{readColSW.ElapsedTicks/10000f} ms</color>,反射赋值耗时:<color=yellow>{reflectionSW.ElapsedTicks/10000f} ms</color>");
 #endif
             }
             finally
             {
                 SQLite3.Finalize(stmt);
             }
+            
+            return retList;
         }
 
 
@@ -3882,11 +3919,12 @@ namespace SQLite4Unity3d
             else
             {
                 //For ILR
-                if (clrType is ILRuntimeWrapperType iltype)
-                {
-                    clrType = iltype.RealType;
-                }
-                else if (clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                // if (clrType is ILRuntimeWrapperType iltype)
+                // {
+                //     clrType = iltype.RealType;
+                // }
+                // else
+                if (clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
                     clrType = clrType.GenericTypeArguments[0];
                 }
