@@ -1469,4 +1469,252 @@ MonoBehaviour:
     m_importFrom: Assets/Resource/URPSetting/UniversalRenderPipelineAsset_Renderer.asset
     m_exportTo: 
     m_variantName: 
+  - m_assetDatabaseId: ad83ff6f0e0c85b498c6b79e1df3ee96
+    m_importFrom: Assets/AssertUnwantedAssetsInBundleTest_AssetsToDelete/Bad/prefab03.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 15a140d61f7dc884d8183dbfa233e7b4
+    m_importFrom: Assets/AssertUnwantedAssetsInBundleTest_AssetsToDelete/Bad/prefab04.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 566af279e156b2c4d92466c6b9e9a5d8
+    m_importFrom: Assets/AssertUnwantedAssetsInBundleTest_AssetsToDelete/Good/prefab01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: e43a7dd9c380d7444bf3262ca325962f
+    m_importFrom: Assets/AssertUnwantedAssetsInBundleTest_AssetsToDelete/Good/prefab02.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: fa9680eb90d9ff24e84d98997524ed9a
+    m_importFrom: Assets/ErrorTest_AssetsToDelete/prefab01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 0ee5b3a8ca319e44ab4f532baa22af59
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/boss/body.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 7331cc76c638c21489d957185281cce9
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/boss/head01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: a49b731c50c497845a47890b28f33587
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/boss/weapon.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 5651659731677b64ab5931d000c44215
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c0001/v0001/body.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: ea29013be59f7ff47be1ec92040160c1
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c0001/v0001/head01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 1264a4d86a8e6d04a9857c8dcc7c1c79
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c0001/v0002/body.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: f24c87c389f65534881dac740f117071
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c0001/v0002/head01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: d7301d2f5225f27479aa86236963287c
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c0001/v0003/body.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: e9f7c04743e950a44b0c75616e1779ad
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c0001/v0003/head01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 79355c3db24c04f4bb1b9c08185406c4
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c0001/v0003/head02.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 977cdc5c138e2f14f87e0d9d0ab7764d
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c1834/v0001/body.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 18bfb8a17b5ba5a44ab2083ede81f10d
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c1834/v0001/head01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 13ad08b3e9bfb4b4cbf191dc5de288cc
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c1834/v0001/head02.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 27eac4d6d146c024cbd2cb2b6d6f90fc
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c1834/v0001/weapon.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 4961f24952bc91e4497166ce4a4aa100
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c1834/v0002/body.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: e2c2b83cf7e583141afa5da1164eed40
+    m_importFrom: Assets/GroupByFilePathTest_AssetsToDelete/c1834/v0002/head01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: a7c378f3dbccd1e4597b8e659ea657b3
+    m_importFrom: Assets/GroupByFileTest_AssetsToDelete/c0001/v0001/body.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: d0916f37577383a46a0bc8091c0e7cc4
+    m_importFrom: Assets/GroupByFileTest_AssetsToDelete/c0001/v0001/head01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: e0c251e0e314eb14183d8d267cef0629
+    m_importFrom: Assets/GroupByFileTest_AssetsToDelete/c0001/v0002/body.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 730d6dc1b776bec46b62bde9f34a06bd
+    m_importFrom: Assets/GroupByFileTest_AssetsToDelete/c0001/v0002/head01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 76a7ced8a017ef943bea8bc9b073f748
+    m_importFrom: Assets/GroupByFileTest_AssetsToDelete/c0001/v0003/body.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 30c99ef2880c8c54c85940b215652259
+    m_importFrom: Assets/GroupByFileTest_AssetsToDelete/c0001/v0003/head01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 2fe7df97309b6724d8e0242fa654d9d5
+    m_importFrom: Assets/GroupByFileTest_AssetsToDelete/c0001/v0003/head02.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: f2e18da992567314a9c32b9df0e2c20e
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Materials/linedraw.mat
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 72f7d89dd56909141aeb354e3d2b0036
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Prefabs/prefab01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 4dd3ffce2ca833147971eb2824e05f30
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Prefabs/prefab02.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: de4f688580147bd488b269cda2229907
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Prefabs/prefab03.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 866f5154df3e7f5498f8328347bb6221
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Prefabs/prefab04.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 1ac5eb3a9a8b61c4c9c08a715b709cf4
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Prefabs/prefab05.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 428b4c1f21feb764086939a6ddea80b8
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_l01.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 00fb5a49c8a54f54c83ef7288d66e710
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_l02.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 194d1f993e79bd344a59f9dc4a43aab0
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_l03.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: c7a5c138edf304f40b505bf62fe50b1d
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_l04.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 2244e33fbb23bee4984cbd270a86e9b5
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_l05.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: a03db286ef4fcab48abf34a75de79105
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_m01.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 56fc3cafa19db6344899944fd3ee5eaa
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_m02.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: abe12331cda9e1a41a89cbe6f505bc0c
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_m03.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 2295ef7dac6dd174d9fc05b6b6126c90
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_m04.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 7a6d5a48886128948902211faa6fccf5
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_m05.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 464f69c91c024f041920f0e5bc0620b2
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_s01.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 509252171a35db2428e9b557cd9d3efb
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_s02.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: e419fd6b1689ff24ebe0b7b19b1bafce
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_s03.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: c3633a88ca7ef7846806a3cbd574a40d
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_s04.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 91526df1a737fd446a5449b84ea51400
+    m_importFrom: Assets/GroupBySizeTest_AssetsToDelete/Textures/tex_s05.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: f7c7685933d166140b0a6bd617c72565
+    m_importFrom: Assets/LoadBySearchFilterTest_AssetsToDelete/LoadBySearchFilterTestPrefab01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: e4b538979c147ce4ba91a9346aef3175
+    m_importFrom: Assets/LoadBySearchFilterTest_AssetsToDelete/LoadBySearchFilterTestMaterial01.mat
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 77dd37ea397590442a4c97c63c6b1cda
+    m_importFrom: Assets/LoadFromDirectoryTest_AssetsToDelete/Ignore/prefab05.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 3608bea9a151dcd499643eeba8ac08d7
+    m_importFrom: Assets/LoadFromDirectoryTest_AssetsToDelete/Ignore/prefab06.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 2dfef50ca1bb21342996b7add9e2b6d7
+    m_importFrom: Assets/LoadFromDirectoryTest_AssetsToDelete/prefab01.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 9c8c5297f1e6e044cbc5ad375cacffe2
+    m_importFrom: Assets/LoadFromDirectoryTest_AssetsToDelete/prefab02.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: f34cc0b61be3b6c4aa13431cfd99d9ef
+    m_importFrom: Assets/LoadFromDirectoryTest_AssetsToDelete/prefab03.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: eff4ac18cefeffd42a9d98bfe060d61d
+    m_importFrom: Assets/LoadFromDirectoryTest_AssetsToDelete/prefab04.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 68518acbc37f3e443956616b5164b13e
+    m_importFrom: Assets/SplitByFilterTest_AssetsToDelete/mat01.mat
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: f6594723f5bcb8441b9b3811d8db1caf
+    m_importFrom: Assets/SplitByFilterTest_AssetsToDelete/OtherSub/tex01.png
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 5b709923d4938a447bf0b6890ccf19d4
+    m_importFrom: Assets/SplitByFilterTest_AssetsToDelete/prefab02.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 7b9b1bd6a28a4b04e9543ee06434a66c
+    m_importFrom: Assets/SplitByFilterTest_AssetsToDelete/SubFolder/foovar.prefab
+    m_exportTo: 
+    m_variantName: 
+  - m_assetDatabaseId: 69849b30a4bae004786b08f042e65e89
+    m_importFrom: Assets/SplitByFilterTest_AssetsToDelete/SubFolder/prefab01.prefab
+    m_exportTo: 
+    m_variantName: 
   m_version: 2

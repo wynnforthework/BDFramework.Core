@@ -41,6 +41,7 @@ using ILRuntime.Reflection;
 using ILRuntime.Runtime.Intepreter;
 using LitJson;
 using MessagePack;
+using PtrReflection;
 using UnityEngine;
 using Utils.mslibEx;
 using Debug = System.Diagnostics.Debug;
@@ -2797,7 +2798,7 @@ namespace SQLite4Unity3d
                         .FirstOrDefault();
 #endif
             }
-            
+
 
             TableName = (tableAttr != null && !string.IsNullOrEmpty(tableAttr.Name)) ? tableAttr.Name : MappedType.Name;
             WithoutRowId = tableAttr != null ? tableAttr.WithoutRowId : false;
@@ -2847,7 +2848,7 @@ namespace SQLite4Unity3d
             {
                 return GetFieldsFromValueTuple(type);
             }
-            
+
             var members = new List<MemberInfo>();
             var memberNames = new HashSet<string>();
             var newMembers = new List<MemberInfo>();
@@ -3131,7 +3132,6 @@ namespace SQLite4Unity3d
 
                 return obj.GetType();
             }
-
         }
 
         public static string SqlDecl(TableMapping.Column p, bool storeDateTimeAsTicks, bool storeTimeSpanAsTicks)
@@ -3168,7 +3168,7 @@ namespace SQLite4Unity3d
             {
                 clrType = ilrtype.RealType;
             }
-            
+
             if (clrType == typeof(Boolean) || clrType == typeof(Byte) || clrType == typeof(UInt16) || clrType == typeof(SByte) || clrType == typeof(Int16) || clrType == typeof(Int32) || clrType == typeof(UInt32) || clrType == typeof(Int64))
             {
                 return "integer";
@@ -3406,6 +3406,19 @@ namespace SQLite4Unity3d
             return ret;
         }
 
+        /// <summary>
+        /// 快速检索
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public List<T> FastExecuteQuery<T>()
+        {
+            var t = typeof(T);
+            var map = _conn.GetMapping(t);
+            var ret = FastExecuteDeferredQuery<T>(map).ToList();
+            return ret;
+        }
+
         public List<T> ExecuteQuery<T>()
         {
             return ExecuteDeferredQuery<T>(_conn.GetMapping(typeof(T))).ToList();
@@ -3491,6 +3504,10 @@ namespace SQLite4Unity3d
                 sw.Restart();
 #endif
                 var count = 0;
+                
+                Stopwatch readColSW = new Stopwatch();
+                Stopwatch reflectionSW = new Stopwatch();
+
                 //反序列化
                 while (SQLite3.Step(stmt) == SQLite3.Result.Row)
                 {
@@ -3518,12 +3535,17 @@ namespace SQLite4Unity3d
                         else
                         {
                             var colType = SQLite3.ColumnType(stmt, i);
-                            var val = ReadCol(stmt, i, colType, cols[i].ColumnType);
-                            cols[i].SetValue(obj, val);
+                            readColSW.Start();
+                            var value = ReadCol(stmt, i, colType, cols[i].ColumnType);
+                            readColSW.Stop();
+                            //
+                            reflectionSW.Start();
+                            cols[i].SetValue(obj, value);
+                            reflectionSW.Stop();
                         }
                     }
 
-                   
+
                     OnInstanceCreated(obj);
                     yield return (T) obj;
                 }
@@ -3531,20 +3553,116 @@ namespace SQLite4Unity3d
                 sw.Stop();
                 var deSerializeTime = sw.ElapsedTicks / 10000f;
                 var total = serchSqlTime + deSerializeTime;
-                if (total > 10)
-                {
-                    if (Application.isPlaying)
-                    {
-                        UnityEngine.Debug.LogError($"<color=white>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, 执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化耗时：<color=yellow>{deSerializeTime}ms</color>");
-                    }
-                }
-#endif
+                UnityEngine.Debug.Log($"<color=red>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, " +
+                                      $"反序列化总耗时：<color=yellow>{deSerializeTime}ms</color> " +
+                                      $"sql查询Row数据耗时：<color=yellow>{readColSW.ElapsedTicks/10000f} ms</color>,反射赋值耗时:<color=yellow>{reflectionSW.ElapsedTicks/10000f} ms</color>");
+#endif       
             }
             finally
             {
                 SQLite3.Finalize(stmt);
             }
         }
+
+  
+
+        /// <summary>
+        /// 快速检索
+        /// </summary>
+        /// <param name="map"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public  unsafe List<T> FastExecuteDeferredQuery<T>(TableMapping map)
+        {
+#if ENABLE_BDEBUG
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+#endif
+            List<T> retList = new List<T>();
+            if (_conn.Trace)
+            {
+                _conn.Tracer?.Invoke("Executing Query: " + this);
+            }
+
+            //1.prepare sql数据
+            var stmt = Prepare();
+            try
+            {
+           
+                var cols = new TableMapping.Column[SQLite3.ColumnCount(stmt)];
+                if (map.Method == TableMapping.MapMethod.ByPosition)
+                {
+                    Array.Copy(map.Columns, cols, Math.Min(cols.Length, map.Columns.Length));
+                }
+                else if (map.Method == TableMapping.MapMethod.ByName)
+                {
+                    for (int i = 0; i < cols.Length; i++)
+                    {
+                        var name = SQLite3.ColumnName16(stmt, i);
+                        cols[i] = map.FindColumn(name);
+                    }
+                }
+
+#if ENABLE_BDEBUG
+                Stopwatch readColSW = new Stopwatch();
+                Stopwatch reflectionSW = new Stopwatch();
+#endif
+                
+                //查询结果，反序列化
+                var count = 0;
+                TypeAddrReflectionWrapper reflectionWrapper = TypeAddrReflectionWrapper.GetWrapper(typeof(T));
+                //2.sqlite 执行sql
+                while (SQLite3.Step(stmt) == SQLite3.Result.Row)
+                {
+                    count++;
+                    var obj = Activator.CreateInstance(map.MappedType);
+                    //指针偏移 创建对象
+                    byte* handleByte = UnsafeTool.unsafeTool.ObjectToBytePtr(obj);
+                    for (int i = 0; i < cols.Length; i++)
+                    {
+                        var col = cols[i];
+                        if (col == null)
+                            continue;
+                        var colType = SQLite3.ColumnType(stmt, i);
+#if ENABLE_BDEBUG
+                        readColSW.Start();
+#endif
+                        var value = ReadCol(stmt, i, colType, cols[i].ColumnType);
+                        
+#if ENABLE_BDEBUG
+                        readColSW.Stop();
+                        reflectionSW.Start();
+#endif
+                        var name = col.Name;
+                        fixed (char* p = name)
+                        {
+                            TypeAddrFieldAndProperty typeAddr = reflectionWrapper.Find(p,  name.Length);
+                            typeAddr.SetPropertyValue(handleByte, value);
+                            //var v = (int)typeAddr.GetPropertyValue(handleByte);
+                        }
+#if ENABLE_BDEBUG
+                        reflectionSW.Stop();
+#endif
+                    }
+                    //添加
+                    retList.Add((T)obj);
+                }
+#if ENABLE_BDEBUG
+                sw.Stop();
+                var deSerializeTime = sw.ElapsedTicks / 10000f;
+                UnityEngine.Debug.Log($"<color=red>sql消耗较高!查询结果数量:{count}</color>, " +
+                                      $"总耗时：<color=yellow>{deSerializeTime}ms</color> " +
+                                      $"查询Row数据耗时：<color=yellow>{readColSW.ElapsedTicks/10000f} ms</color>,反射赋值耗时:<color=yellow>{reflectionSW.ElapsedTicks/10000f} ms</color>");
+#endif
+            }
+            finally
+            {
+                SQLite3.Finalize(stmt);
+            }
+            
+            return retList;
+        }
+
 
         public T ExecuteScalar<T>()
         {
@@ -3762,7 +3880,7 @@ namespace SQLite4Unity3d
                 else if (value.GetType().IsArray || value.GetType().FullName.Contains(".List"))
                 {
                     byte[] bytes = MessagePackSerializer.Serialize(value);
-                    
+
                     SQLite3.BindBlob(stmt, index, bytes, bytes.Length, NegativePointer);
                 }
                 else
@@ -3804,11 +3922,12 @@ namespace SQLite4Unity3d
             else
             {
                 //For ILR
-                if (clrType is ILRuntimeWrapperType iltype)
-                {
-                    clrType = iltype.RealType;
-                }
-                else if (clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                // if (clrType is ILRuntimeWrapperType iltype)
+                // {
+                //     clrType = iltype.RealType;
+                // }
+                // else
+                if (clrType.IsGenericType && clrType.GetGenericTypeDefinition() == typeof(Nullable<>))
                 {
                     clrType = clrType.GenericTypeArguments[0];
                 }
@@ -3936,10 +4055,10 @@ namespace SQLite4Unity3d
                     return new UriBuilder(text);
                 }
                 //ForILR:数组当成json串存储,文档存储
-                else if (clrType.IsArray ||clrType.FullName.Contains(".List"))
+                else if (clrType.IsArray || clrType.FullName.Contains(".List"))
                 {
                     var bytes = SQLite3.ColumnByteArray(stmt, index);
-                   
+
 
                     if (clrType.IsArray)
                     {
@@ -3988,7 +4107,7 @@ namespace SQLite4Unity3d
                             return MessagePackSerializer.Deserialize<List<double>>(bytes);
                         }
                     }
-                  
+
 
                     return null;
                 }

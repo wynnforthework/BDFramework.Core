@@ -14,16 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_events:
   - m_kind: 1
-    m_timestampUtc: 133270767232858892
+    m_timestampUtc: 133388225764773081
     m_assetName: 
     m_assetGuid: 
-    m_graphGuid: ec30958a9cb9a414dbb58cbbbf184ea1
-    m_nodeId: 5c54f429-2e9d-45d5-ad93-29577e3649bb
-    m_nodeName: "\u6253\u5305AssetBundle"
-    m_description: System.NullReferenceException:Object reference not set to an instance
-      of an object
-    m_howToFix: See Console for detail.
-  m_errorEventCount: 95
+    m_graphGuid: 4a0b85fd49f18421dbe7ab1207ce08d6
+    m_nodeId: c8c23a0f-4f8d-46ef-806b-d3e4c4cb9ce5
+    m_nodeName: Assert Unwanted Assets In Bundle
+    m_description: Unwanted asset found in dependency:'Packages/com.unity.render-pipelines.universal/Runtime/Materials/Lit.mat'
+      from following asset:Assets/AssertUnwantedAssetsInBundleTest_AssetsToDelete/Good/prefab01.prefab
+    m_howToFix: Move this asset under AssertUnwantedAssetsInBundleTest_AssetsToDelete/Good
+  m_errorEventCount: 96
   m_infoEventCount: 0
   m_version: 1
   m_processStartIndex: 0
