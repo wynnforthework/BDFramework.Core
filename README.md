@@ -146,7 +146,9 @@ If you find a bug or have some suggestions,please make issue! I'll get back to y
 <a name="d2KC6"></a>
 # 贡献者名单
 
-[@gaojiexx](https://github.com/gaojiexx)  <br />[@ricashao](https://github.com/ricashao)  <br />[@瞎哥](https://github.com/AfarMiss)  <br />如果需要项目方案定制、企业支持,可以联系 QQ:755737878  <br />也随时欢迎交流各种技术.  
-
-如果您有好的修改或者拓展，也随时欢迎讨论和提PR.
+[@gaojiexx](https://github.com/gaojiexx)  
+[@ricashao](https://github.com/ricashao)  
+如果需要项目方案定制、企业支持,可以联系 QQ:755737878.  
+也随时欢迎交流各种技术.  
+如果您有好的修改或者拓展，也随时欢迎讨论和提PR.  
  
