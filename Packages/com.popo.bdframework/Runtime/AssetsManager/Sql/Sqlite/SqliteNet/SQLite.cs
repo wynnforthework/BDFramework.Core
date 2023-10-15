@@ -3554,8 +3554,8 @@ namespace SQLite4Unity3d
                 var deSerializeTime = sw.ElapsedTicks / 10000f;
                 var total = serchSqlTime + deSerializeTime;
                 UnityEngine.Debug.Log($"<color=red>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, " +
-                                      $"执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化总耗时：<color=yellow>{deSerializeTime}ms</color> " +
-                                      $" - 读取Row数据耗时：<color=yellow>{readColSW.ElapsedTicks/10000f} ms</color>,反射赋值耗时:<color=yellow>{reflectionSW.ElapsedTicks/10000f} ms</color>");
+                                      $"反序列化总耗时：<color=yellow>{deSerializeTime}ms</color> " +
+                                      $"sql查询Row数据耗时：<color=yellow>{readColSW.ElapsedTicks/10000f} ms</color>,反射赋值耗时:<color=yellow>{reflectionSW.ElapsedTicks/10000f} ms</color>");
 #endif       
             }
             finally
@@ -3584,10 +3584,11 @@ namespace SQLite4Unity3d
                 _conn.Tracer?.Invoke("Executing Query: " + this);
             }
 
+            //1.prepare sql数据
             var stmt = Prepare();
             try
             {
-                //Sqlite查表
+           
                 var cols = new TableMapping.Column[SQLite3.ColumnCount(stmt)];
                 if (map.Method == TableMapping.MapMethod.ByPosition)
                 {
@@ -3601,24 +3602,21 @@ namespace SQLite4Unity3d
                         cols[i] = map.FindColumn(name);
                     }
                 }
-#if ENABLE_BDEBUG
-                sw.Stop();
-                var serchSqlTime = sw.ElapsedTicks / 10000f;
-                sw.Restart();
-#endif
 
+#if ENABLE_BDEBUG
                 Stopwatch readColSW = new Stopwatch();
                 Stopwatch reflectionSW = new Stopwatch();
-                
+#endif
                 
                 //查询结果，反序列化
                 var count = 0;
                 TypeAddrReflectionWrapper reflectionWrapper = TypeAddrReflectionWrapper.GetWrapper(typeof(T));
+                //2.sqlite 执行sql
                 while (SQLite3.Step(stmt) == SQLite3.Result.Row)
                 {
                     count++;
                     var obj = Activator.CreateInstance(map.MappedType);
-                    //指针偏移
+                    //指针偏移 创建对象
                     byte* handleByte = UnsafeTool.unsafeTool.ObjectToBytePtr(obj);
                     for (int i = 0; i < cols.Length; i++)
                     {
@@ -3626,11 +3624,15 @@ namespace SQLite4Unity3d
                         if (col == null)
                             continue;
                         var colType = SQLite3.ColumnType(stmt, i);
+#if ENABLE_BDEBUG
                         readColSW.Start();
+#endif
                         var value = ReadCol(stmt, i, colType, cols[i].ColumnType);
+                        
+#if ENABLE_BDEBUG
                         readColSW.Stop();
-                        //
                         reflectionSW.Start();
+#endif
                         var name = col.Name;
                         fixed (char* p = name)
                         {
@@ -3638,7 +3640,9 @@ namespace SQLite4Unity3d
                             typeAddr.SetPropertyValue(handleByte, value);
                             //var v = (int)typeAddr.GetPropertyValue(handleByte);
                         }
+#if ENABLE_BDEBUG
                         reflectionSW.Stop();
+#endif
                     }
                     //添加
                     retList.Add((T)obj);
@@ -3646,10 +3650,9 @@ namespace SQLite4Unity3d
 #if ENABLE_BDEBUG
                 sw.Stop();
                 var deSerializeTime = sw.ElapsedTicks / 10000f;
-                var total = serchSqlTime + deSerializeTime;
-                UnityEngine.Debug.Log($"<color=red>sql消耗较高!</color>:<color=yellow>{total}ms</color>，查询结果数量:<color=red>{count}</color>, " +
-                                      $"执行sql耗时: <color=yellow>{serchSqlTime} ms</color>,反序列化总耗时：<color=yellow>{deSerializeTime}ms</color> " +
-                                      $" - 读取Row数据耗时：<color=yellow>{readColSW.ElapsedTicks/10000f} ms</color>,反射赋值耗时:<color=yellow>{reflectionSW.ElapsedTicks/10000f} ms</color>");
+                UnityEngine.Debug.Log($"<color=red>sql消耗较高!查询结果数量:{count}</color>, " +
+                                      $"总耗时：<color=yellow>{deSerializeTime}ms</color> " +
+                                      $"查询Row数据耗时：<color=yellow>{readColSW.ElapsedTicks/10000f} ms</color>,反射赋值耗时:<color=yellow>{reflectionSW.ElapsedTicks/10000f} ms</color>");
 #endif
             }
             finally

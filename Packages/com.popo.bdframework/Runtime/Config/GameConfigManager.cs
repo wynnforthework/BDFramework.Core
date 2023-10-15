@@ -50,6 +50,7 @@ namespace BDFramework.Configure
             base.Start();
             if (this.GetAllClassDatas().Count() == 0)
             {
+                
                 BDebug.LogError("[GameconfigManger]启动失败，class data 数量为0.");
             }
 

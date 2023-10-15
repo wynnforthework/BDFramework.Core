@@ -112,6 +112,8 @@ namespace BDFramework.Sql
             var con = new SQLiteConnection(cs);
             if (con.IsOpen)
             {
+             // var ret =   con.ExecuteScalar<string>("PRAGMA cache_size = 2000");
+              // var ret2=   con.ExecuteScalar<string>("PRAGMA mmap_size = 4294967296");
                 SqLiteConnectionMap[Path.GetFileName(path)] = con;
                 return con;
             }
